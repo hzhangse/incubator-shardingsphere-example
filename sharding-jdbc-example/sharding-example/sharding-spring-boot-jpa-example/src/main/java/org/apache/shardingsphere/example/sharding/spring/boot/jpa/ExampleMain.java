@@ -17,8 +17,20 @@
 
 package org.apache.shardingsphere.example.sharding.spring.boot.jpa;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
 import org.apache.shardingsphere.example.core.api.ExampleExecuteTemplate;
+import org.apache.shardingsphere.example.core.api.entity.Order;
+import org.apache.shardingsphere.example.core.api.entity.OrderItem;
 import org.apache.shardingsphere.example.core.api.service.ExampleService;
+import org.apache.shardingsphere.example.core.jpa.repository.OrderItemRepositoryImpl;
+import org.apache.shardingsphere.example.core.jpa.repository.OrderRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,16 +38,18 @@ import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfigurati
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.sql.SQLException;
-
 @ComponentScan("org.apache.shardingsphere.example.core.jpa")
 @EntityScan(basePackages = "org.apache.shardingsphere.example.core.jpa.entity")
 @SpringBootApplication(exclude = JtaAutoConfiguration.class)
 public class ExampleMain {
     
     public static void main(final String[] args) throws SQLException {
-        try (ConfigurableApplicationContext applicationContext = SpringApplication.run(ExampleMain.class, args)) {
+    	ConfigurableApplicationContext applicationContext = SpringApplication.run(ExampleMain.class, args);
+    	ExampleExecuteTemplate.run(applicationContext.getBean(ExampleService.class));
+       /* try (ConfigurableApplicationContext applicationContext = SpringApplication.run(ExampleMain.class, args)) {
             ExampleExecuteTemplate.run(applicationContext.getBean(ExampleService.class));
-        }
+        }*/
     }
+
+ 
 }
